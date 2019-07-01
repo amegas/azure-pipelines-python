@@ -36,8 +36,9 @@ class Settings:
     def timeout(self, value):
         if (value == None):
             self._timeout = DEFAULT_REQUESTS_TIMEOUT
+        else:
+            self._timeout = int(value)
 
-        self._timeout = value
         print("[{0}] You've set the next timeout value for the HTTP requests: {1}".format(datetime.datetime.now(), self._timeout))
 
 class AzurePipelineHandler:
