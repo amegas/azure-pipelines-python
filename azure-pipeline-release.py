@@ -83,12 +83,17 @@ class AzurePipelineHandler:
                     raise Exception("The given endpoint from array is not a string.")
 
                 print(value)
-                future = loop.run_in_executor(None, functools.partial(requests.get, value, timeout=settings._timeout))
-                response = yield from future
-                print("[{0}] Response from: '{1}', HTTP response-code: {2}".format(datetime.datetime.now(), value, response.status_code))
 
-                if (response.status_code == HTTPStatus.OK):
-                    self._states[value] = StateValue.OK
+                try:
+                    future = loop.run_in_executor(None, functools.partial(requests.get, value, timeout=settings._timeout))
+                    response = yield from future
+                    print("[{0}] Response from: '{1}', HTTP response-code: {2}".format(datetime.datetime.now(), value, response.status_code))
+
+                    if (response.status_code == HTTPStatus.OK):
+                        self._states[value] = StateValue.OK
+
+                except (requests.exceptions.RequestException, ValueError) as exception:
+                    print(exception)
 
 handler = AzurePipelineHandler()
 handler.run()
